@@ -50,7 +50,10 @@ class Graph:
     
     def depth2(self,start,b):
         t = self.deg(start)
-        print(f"{chr(start+65)}({t})", end = " ")    
+        if t % 2 == 1:
+            print(f"{chr(start+65)}[{t}]", end = " ")   
+        else:
+            print(f"{chr(start+65)}", end = " ")
         for i in range(len(b)):
             if self.a[start][i]!=0 and b[i]:
                 b[i] = False
@@ -95,41 +98,24 @@ class Graph:
         self.Euler(start)
 
    
-
-    def Euler(self,start):
-        #===YOU CAN EDIT OR EVEN ADD NEW FUNCTIONS IN THE FOLLOWING PART 2 ========
-        stack = Stack()
-        euler_cycle = []
-
-        stack.push(start)
-
-        while not stack.isEmpty():
-            r = stack.top()
-
-            if self.isIsolated(r):
-                stack.pop()
-                euler_cycle.append(chr(r + 65))
-            else:
-                for y in range(len(self.a)):
-                    if self.a[r][y] != 0:
-                        stack.push(y)
-                        self.a[r][y] = 0
-                        self.a[y][r] = 0
-                        break
-        
-        print(' '.join(euler_cycle))
-    
     def isIsolated(self, vertex):
         for y in range(len(self.a)):
             if self.a[vertex][y] != 0:
                 return False
         return True
-    ##################
+    # #################
     def Euler(self, start):#if start is char
     # Convert character to integer
         start = ord(start) - 65
 
     # Rest of the code remains the same
+
+        #count degrees first
+
+        degrees = []
+        for i in range(len(self.a)):
+            degrees.append(self.deg(i))
+
         stack = Stack()
         euler_cycle = []
 
@@ -145,104 +131,113 @@ class Graph:
                 for y in range(len(self.a)):
                     if self.a[r][y] != 0:
                         stack.push(y)
-                        self.a[r][y] = 0
-                        self.a[y][r] = 0
+                        self.a[r][y] -= 1
+                        self.a[y][r] -= 1
                         break
         
         print(' '.join(euler_cycle))
 
-def isIsolated(self, vertex):
-    for y in range(len(self.a)):
-        if self.a[vertex][y] != 0:
-            return False
-    return True
+        for v in euler_cycle:
+            degree = degrees[ord(v) - 65]
+            if degree < 6:
+                print(f"{v}[{degree}]", end = ' ')
+            else:
+                print(f"{v}", end = ' ')
 
 
 
-    #------------------------------
+# def isIsolated(self, vertex):
+#     for y in range(len(self.a)):
+#         if self.a[vertex][y] != 0:
+#             return False
+#     return True
+
+
+
+#     #------------------------------
         
 
-# -----------------------------
-def Dsk(self,start,end): #dành cho start = num ( "1")
-    num_vertices = len(self.a)
-    dist = [math.inf] * num_vertices
-    dist[start] = 0
+# # -----------------------------
+# def Dsk(self,start,end): #dành cho start = num ( "1")
+#     num_vertices = len(self.a)
+#     dist = [math.inf] * num_vertices
+#     dist[start] = 0
 
-    queue = MyQueue()
-    queue.EnQueue(start)
+#     queue = MyQueue()
+#     queue.EnQueue(start)
 
-    while not queue.isEmpty():
-        u = queue.DeQueue()
+#     while not queue.isEmpty():
+#         u = queue.DeQueue()
 
-        for v in range(num_vertices):
-            if self.a[u][v] != 0:
-                new_dist = dist[u] + self.a[u][v]
-                if new_dist < dist[v]:
-                    dist[v] = new_dist
-                    queue.EnQueue(v)
+#         for v in range(num_vertices):
+#             if self.a[u][v] != 0:
+#                 new_dist = dist[u] + self.a[u][v]
+#                 if new_dist < dist[v]:
+#                     dist[v] = new_dist
+#                     queue.EnQueue(v)
 
-    path = self.getShortestPath(start, end, dist)
-    shortest_distances = ' '.join([str(dist[i]) for i in path])
-    shortest_path = ' '.join([chr(vertex + 65) for vertex in path])
+#     path = self.getShortestPath(start, end, dist)
+#     shortest_distances = ' '.join([str(dist[i]) for i in path])
+#     shortest_path = ' '.join([chr(vertex + 65) for vertex in path])
 
-    print(shortest_path)
-    print(shortest_distances)
+#     print(shortest_path)
+#     print(shortest_distances)
 
-def getShortestPath(self, start, end, dist):
-    path = [end]
-    curr = end
+# def getShortestPath(self, start, end, dist):
+#     path = [end]
+#     curr = end
 
-    while curr != start:
-        for v in range(len(self.a)):
-            if self.a[curr][v] != 0:
-                if dist[curr] - self.a[curr][v] == dist[v]:
-                    path.append(v)
-                    curr = v
-                    break
+#     while curr != start:
+#         for v in range(len(self.a)):
+#             if self.a[curr][v] != 0:
+#                 if dist[curr] - self.a[curr][v] == dist[v]:
+#                     path.append(v)
+#                     curr = v
+#                     break
 
-    return path[::-1]
-def DJK(self,start,end): #dành cho start = char("A")
-    num_vertices = len(self.a)
-    dist = [math.inf] * num_vertices
-    dist[self.char_to_number(start)] = 0
+#     return path[::-1]
+# def DJK(self,start,end): #dành cho start = char("A")
+#     num_vertices = len(self.a)
+#     dist = [math.inf] * num_vertices
+#     dist[self.char_to_number(start)] = 0
 
-    queue = MyQueue()
-    queue.EnQueue(self.char_to_number(start))
+#     queue = MyQueue()
+#     queue.EnQueue(self.char_to_number(start))
 
-    while not queue.isEmpty():
-        u = queue.DeQueue()
+#     while not queue.isEmpty():
+#         u = queue.DeQueue()
 
-        for v in range(num_vertices):
-            if self.a[u][v] != 0:
-                new_dist = dist[u] + self.a[u][v]
-                if new_dist < dist[v]:
-                    dist[v] = new_dist
-                    queue.EnQueue(v)
+#         for v in range(num_vertices):
+#             if self.a[u][v] != 0:
+#                 new_dist = dist[u] + self.a[u][v]
+#                 if new_dist < dist[v]:
+#                     dist[v] = new_dist
+#                     queue.EnQueue(v)
 
-    path = self.getShortestPath(self.char_to_number(start), self.char_to_number(end), dist)
+#     path = self.getShortestPath(self.char_to_number(start), self.char_to_number(end), dist)
 
-    if path:
-        shortest_path = '-'.join([chr(vertex + 65) for vertex in path])
-        shortest_distances = '-'.join([f"{chr(vertex + 65)}({dist[vertex]})" for vertex in path[::-1]])
-    else:
-        shortest_path = "No path"
-        shortest_distances = "No path"
+#     if path:
+#         shortest_path = '-'.join([chr(vertex + 65) for vertex in path])
+#         shortest_distances = '-'.join([f"{chr(vertex + 65)}({dist[vertex]})" for vertex in path[::-1]])
+#     else:
+#         shortest_path = "No path"
+#         shortest_distances = "No path"
 
-    print(shortest_path)
-    print(shortest_distances)
-def getShortestPath(self, start, end, dist):
-    path = [end]
-    curr = end
+#     print(shortest_path)
+#     print(shortest_distances)
+# def getShortestPath(self, start, end, dist):
+#     path = [end]
+#     curr = end
 
-    while curr != start:
-        for v in range(len(self.a)):
-            if self.a[curr][v] != 0:
-                if dist[curr] - self.a[curr][v] == dist[v]:
-                    path.append(v)
-                    curr = v
-                    break
+#     while curr != start:
+#         for v in range(len(self.a)):
+#             if self.a[curr][v] != 0:
+#                 if dist[curr] - self.a[curr][v] == dist[v]:
+#                     path.append(v)
+#                     curr = v
+#                     break
 
-    return path[::-1]
+#     return path[::-1]
     
     
                

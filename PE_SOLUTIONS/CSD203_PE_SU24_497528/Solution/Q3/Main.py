@@ -73,4 +73,3 @@ elif choice ==2:
     g.f2(para[0])    
 else:
     print("Wrong select")
-print("FINISH")    

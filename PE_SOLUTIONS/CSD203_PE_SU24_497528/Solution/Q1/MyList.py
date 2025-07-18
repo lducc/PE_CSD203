@@ -12,7 +12,8 @@ class MyList:
         while pt.next:
             print(pt.data, end = " ")
             pt = pt.next
-        print(pt.data)        
+        print(pt.data)
+
     def clear(self):
         self.head = None    
 #Q1-1
@@ -33,34 +34,52 @@ class MyList:
 #Q1-2          
     def f2(self, A):
         # ===YOU CAN EDIT OR EVEN ADD NEW FUNCTIONS IN THE FOLLOWING PART 2 ========
-        if self.head == None:
-            self.head = A
+        new_node = Node(A)
+
+        if self.isEmpty():
+            self.head = new_node
+            self.tail = new_node
+
             return
-        cur = self.head
-        while cur:
-            if cur.data.Age % 2 == 0:#sửa điều kiện theo yêu cầu đề bài
-                A.next = cur.next
-                cur.next = A
-                break
-            cur = cur.next 
-    # end def
+        
+        curr = self.head
+
+        if curr.data.Age % 2 == 0:
+            new_node.next = curr
+            self.head = new_node
+            return
+
+        curr, prev = self.head.next, self.head
+        while curr:
+            if curr.data.Age % 2 == 0:
+                prev.next = new_node
+                new_node.next = curr
+                return
+            prev = curr
+            curr = curr.next            
+        # if self.head is None:
+        #     self.head 
 #Q1-3
     def f3(self):
         # ===YOU CAN EDIT OR EVEN ADD NEW FUNCTIONS IN THE FOLLOWING PART 3 ========
-        if self.head is None:
+
+        if self.isEmpty():
             return
-        # Check if the first node's age is a square number
+        
         if self.head.data.Age % 2 == 0:
             self.head = self.head.next
             return
-        current = self.head
-        prev = None
-        while current is not None:
-            if current.data.Age % 2 == 0: #sửa điều kiện theo yêu cầu đề bài
-                prev.next = current.next
+        
+        curr, prev = self.head.next, self.head
+
+        while curr:
+            if curr.data.Age % 2 == 0:
+                prev.next = curr.next
                 return
-            prev = current
-            current = current.next
+            
+            prev = curr
+            curr = curr.next
+
     #end def
 # Q1-4
     def count(self):
@@ -73,24 +92,40 @@ class MyList:
     
     def f4(self):
         # ===YOU CAN EDIT OR EVEN ADD NEW FUNCTIONS IN THE FOLLOWING PART 4 ========
-        totalNode = self.count()
+
+        if self.isEmpty():
+            return
         
-        lst2 = []
-        cur = self.head
-        for i in range(totalNode):
-            if i % 2 == 1:
-                lst2.append((cur.data.Name, cur.data.Salary))
-            cur = cur.next
+        curr = self.head
+
+        while curr:
+            n = curr.next
+            while n:
+                if n.data.Age % 2 == 0 and curr.data.Age % 2 == 0:
+                    if n.data.Age < curr.data.Age or (n.data.Age == curr.data.Age and n.data.Salary > curr.data.Salary):
+                        n.data, curr.data = curr.data, n.data
+                n = n.next
+
+            curr = curr.next
         
-        lst2 = sorted(lst2, key = lambda x: x[1], reverse=True)
-        j = 0
-        cur = self.head
-        for i in range(totalNode):
-            if i % 2 == 1:
-                cur.data.Name = lst2[j][0]
-                cur.data.Salary = lst2[j][1]
-                j += 1
-            cur = cur.next
+        # totalNode = self.count()
+        
+        # lst2 = []
+        # cur = self.head
+        # for i in range(totalNode):
+        #     if i % 2 == 1:
+        #         lst2.append((cur.data.Name, cur.data.Salary))
+        #     cur = cur.next
+        
+        # lst2 = sorted(lst2, key = lambda x: x[1], reverse=True)
+        # j = 0
+        # cur = self.head
+        # for i in range(totalNode):
+        #     if i % 2 == 1:
+        #         cur.data.Name = lst2[j][0]
+        #         cur.data.Salary = lst2[j][1]
+        #         j += 1
+        #     cur = cur.next
     #end def
 
     

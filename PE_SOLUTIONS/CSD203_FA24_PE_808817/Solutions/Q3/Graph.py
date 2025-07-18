@@ -22,18 +22,20 @@ class Graph:
         # ===YOU CAN EDIT OR EVEN ADD NEW FUNCTIONS IN THE FOLLOWING PART 1 ========
         vertex_map = {chr(65 + i): i for i in range(len(self.a))}  
         start_index = vertex_map[start]
+
         visited = [False] * len(self.a)
         queue = MyQueue()
-        queue.enqueue(start_index)
+        queue.EnQueue(start_index)
         visited[start_index] = True
 
         degrees = []
         traversal_order = []
         odd_degree_vertices = []
 
-        while not queue.is_empty():
-            v = queue.dequeue()
+        while not queue.isEmpty():
+            v = queue.DeQueue()
             vertex_char = chr(65 + v)
+
             traversal_order.append(vertex_char)
 
             degree = self.deg(v)
@@ -43,13 +45,14 @@ class Graph:
                 odd_degree_vertices.append(f"{vertex_char}({degree})")
             else:
                 odd_degree_vertices.append(vertex_char)
+
             for i in range(len(self.a)):
                 if self.a[v][i] != 0 and not visited[i]:
-                    queue.enqueue(i)
+                    queue.EnQueue(i)
                     visited[i] = True
 
-        print("".join(degrees))  
-        print("".join(traversal_order))  
+        print(" ".join(degrees))  
+        print(" ".join(traversal_order))  
         print(" ".join(odd_degree_vertices))
     #------------------------------
     
@@ -58,8 +61,10 @@ class Graph:
     def f2(self, fro, to): # fro and to are characters
         # ===YOU CAN EDIT OR EVEN ADD NEW FUNCTIONS IN THE FOLLOWING PART 2 ========
         vertex_map = {chr(65 + i): i for i in range(len(self.a))} 
+
         start_index = vertex_map[fro]
         end_index = vertex_map[to]
+
         num_vertices = len(self.a)
 
         dist = [math.inf] * num_vertices
@@ -74,6 +79,7 @@ class Graph:
                 if not visited[i] and dist[i] < min_dist:
                     min_dist = dist[i]
                     u = i
+
             if u == -1:
                 break 
             visited[u] = True
@@ -83,26 +89,28 @@ class Graph:
                     alt = dist[u] + self.a[u][v]
                     if alt < dist[v]:
                         dist[v] = alt
+                        prev[v] = u
+
         path = []
         u = end_index
         while u is not None:
-            path.insert(0, chr(65 + u))  
+            path.append(chr(65 + u))  
             u = prev[u]
 
-
-        print("-".join(path))  
+        print("-".join(path[::-1]))  
 
 
         path_with_odd_distances = []
-        for i in range(1, len(path)):
-            vertex = path[i]
+
+        for vertex in path[::-1]:
             vertex_idx = vertex_map[vertex]
+
             if dist[vertex_idx] % 2 != 0:
                 path_with_odd_distances.append(f"{vertex}{{{dist[vertex_idx]}}}")
             else:
                 path_with_odd_distances.append(vertex)
 
-        print("-".join([path[0]] + path_with_odd_distances))
+        print("-".join(path_with_odd_distances))
 
            
     

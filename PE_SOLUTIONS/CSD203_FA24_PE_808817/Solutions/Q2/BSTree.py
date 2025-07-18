@@ -67,31 +67,45 @@ class BSTree:
 
     # Q1-1: Insert if conditions are met
     def f1(self, id, name="", price=-1):
-        # ===YOU CAN EDIT OR EVEN ADD NEW FUNCTIONS IN THE FOLLOWING PART 1 ========
-        if name.startswith("G") or id > 100 or price > 100:
-            return  # Do nothing if any condition is met
+        if name[0] == "G" or id > 100 or price > 100:
+            return
         
-        # Create the new Product
-        new_product = Product(id, name, price)
-        # Insert into the BST
+        new_node = Node(Product(id, name, price))
         if self.root is None:
-            self.root = Node(new_product)
-        else:
-            self.root = self.insert_node(self.root, new_product)
-        # ===END PART 1============================================================
-    
-    def insert_node(self, root, product):
-        if root is None:
-            return Node(product)
+            self.root = new_node
+            return
         
-        if product.id < root.data.id:
-            root.left = self.insert_node(root.left, product)
-        elif product.id > root.data.id:
-            root.right = self.insert_node(root.right, product)
-        
-        return root
+        self.root = self.insert(self.root, new_node)
 
-    # Q1-2: Display nodes with price < x during in-order traversal
+
+    def insert(self, start, node):
+        if start is None:
+            return node
+        
+        if node.data.Id < start.data.Id:
+            start.left = self.insert(start.left, node)
+        
+        if node.data.Id > start.data.Id:
+            start.right = self.insert(start.right, node)
+
+        return start
+
+
+    # def f2(self, x):
+    #     self.inOrder2(self.root, x)
+    #     print()
+
+    # def inOrder2(self,start, x):
+    #     if start is None:
+    #         return
+        
+    #     self.inOrder2(start.left, x)
+
+    #     if start.data.Price < x:
+    #         self.visit(start)
+
+    #     self.inOrder2(start.right, x)
+
     def f2(self, x):
         # ===YOU CAN EDIT OR EVEN ADD NEW FUNCTIONS IN THE FOLLOWING PART 2========
         def inOrder_price_check(p, x):
@@ -109,33 +123,53 @@ class BSTree:
     # Q1-3: Delete the first node with two children and price < x
     def f3(self, x):
         # ===YOU CAN EDIT OR EVEN ADD NEW FUNCTIONS IN THE FOLLOWING PART 3========
-        def find_and_delete(root, x):
-            if root is None:
-                return None, False
+        # def find_and_delete(root, x):
+        #     if root is None:
+        #         return None, False
             
-            # Check if current node meets the criteria
-            if root.data.price < x and root.left and root.right:
-                self.root = self.delete_node(self.root, root.data.id)
-                return None, True
+        #     #inorder
+        #     # Check if current node meets the criteria
+        #     if root.data.price < x and root.left and root.right:
+        #         self.root = self.delete_node(self.root, root.data.id)
+        #         return None, True
             
-            # Recursively search in left and right subtrees
-            left_result, deleted = find_and_delete(root.left, x)
-            if deleted:
-                return None, True
+        #     # Recursively search in left and right subtrees
+        #     left_result, deleted = find_and_delete(root.left, x)
+        #     if deleted:
+        #         return None, True
             
-            right_result, deleted = find_and_delete(root.right, x)
-            return None, deleted
+        #     right_result, deleted = find_and_delete(root.right, x)
+        #     return None, deleted
 
-        find_and_delete(self.root, x)
+        # find_and_delete(self.root, x)
+        target = self.find_node(self.root, x)
+        self.delete_node(self.root, target.data.Id)
+
         # ===END PART 3============================================================
 
+    def find_node(self, start, x):
+        if start is None:
+            return
+        
+        curr = self.find_node(start.left, x)
+        if curr:
+            return curr
+        
+        if start.left and start.right and start.data.Price < x:
+            return start
+        
+        curr = self.find_node(start.right, x)
+        if curr:
+            return curr
+        
+    #delete by copying right
     def delete_node(self, root, id):
         if root is None:
             return root
         
-        if id < root.data.id:
+        if id < root.data.Id:
             root.left = self.delete_node(root.left, id)
-        elif id > root.data.id:
+        elif id > root.data.Id:
             root.right = self.delete_node(root.right, id)
         else:
             if root.left is None:
@@ -145,14 +179,42 @@ class BSTree:
 
             min_larger_node = self.find_min(root.right)
             root.data = min_larger_node.data
-            root.right = self.delete_node(root.right, min_larger_node.data.id)
+            root.right = self.delete_node(root.right, min_larger_node.data.Id)
         
         return root
+
+    #delete by copying left
+    # def delete_node(self, root, id):
+    #     if root is None:
+    #         return root
+
+    #     if id < root.data.Id:
+    #         root.left = self.delete_node(root.left, id)
+    #     elif id > root.data.Id:
+    #         root.right = self.delete_node(root.right, id)
+    #     else: # Node with the target id is found
+    #         if root.left is None:
+    #             return root.right
+    #         elif root.right is None:
+    #             return root.left
+
+    #         max_smaller_node = self.find_max(root.left)
+    #         root.data = max_smaller_node.data
+    #         root.left = self.delete_node(root.left, max_smaller_node.data.Id)
+
+    #     return root
 
     def find_min(self, node):
         current = node
         while current.left is not None:
             current = current.left
+        return current
+
+
+    def find_max(self, node):
+        current = node
+        while current.right is not None:
+            current = current.right
         return current
 
     # Q1-4: Rotate left if node has right child and price < x
@@ -163,7 +225,7 @@ class BSTree:
                 return None, False
             
             # Check if node meets the rotation criteria
-            if node.right and node.data.price < x:
+            if node.right and node.data.Price < x:
                 # Rotate node to the left
                 return self.rotate_left(node), True
             
